@@ -1,5 +1,5 @@
-import sys
-print(sys.path)
+#import sys
+#print(sys.path)
 import matplotlib.pyplot as plt
 import sklearn
 from sklearn import datasets, metrics, svm
