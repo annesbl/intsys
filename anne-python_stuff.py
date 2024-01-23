@@ -6,7 +6,7 @@ from sklearn import datasets, metrics, svm
 from sklearn.model_selection import train_test_split
 import pandas as pd
 
-directory = "annesbl/intsys/messdaten/"
+directory = "/Users/annesoballa/Documents/intsys übung/projekt/messungen/"
 
 file = "logfile_deo_dose_53mm.txt"
 
@@ -24,5 +24,5 @@ def label_data(df, label):
     return df_labeled
 
 labels = ['hallo']
-df = label_data(df,labels)
+df = df#label_data(df,labels)
 print(df)
