@@ -3,12 +3,14 @@ from sklearn import datasets, metrics, svm
 from sklearn.model_selection import train_test_split
 import pandas as pd
 import numpy as np
+from sklearn.metrics import accuracy_score
 
-directory = "messdaten/"
+directory = "/Users/annesoballa/Documents/intsys übung/projekt/messungen/"
 
 file = "logfile_deo_dose_53mm.txt"
 
 df = pd.read_csv(directory + file, header=None)
+
 
 def transform_data(df):
     """
@@ -33,12 +35,49 @@ def transform_data(df):
 
 df_new = transform_data(df)
 
-# print(df)
+
+
+
+#df_new[0,'dose'] = 1 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+print(df_new)
 # print(df_new)
 
 
+X = df_new['label']
+y = df_new.drop('label', axis=1)
 
-fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
-angles = np.linspace(0, 2 * np.pi, 61, endpoint=False)
-ax.plot(angles, df_new.iloc[:, 0])
-plt.show()
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, random_state=42)
+
+clf = svm.SVC(gamma=0.001)
+
+clf.fit(X_train, y_train)
+
+y_predicted = clf.predict(X_test)
+
+accuracy = accuracy_score(y_test, y_predicted)
+print(f'Genauigkeit: {accuracy}')
+
+#* 100:.2f}%
+
+
+
+# fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
+# angles = np.linspace(0, 2 * np.pi, 61, endpoint=False)
+# ax.plot(angles, df_new.iloc[:, 0])
+# plt.show()
+
