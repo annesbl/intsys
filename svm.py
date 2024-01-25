@@ -70,8 +70,10 @@ df_dose3 = pd.read_csv(data_dir + m_5, header=None)
 
 data_dir = "/home/arabanus/Desktop/intlsys_logs/"
 
-m_1 = "logfile_deo_dose_53mm.txt"
-df_dose = pd.read_csv(data_dir + m_1, header=None)
+# m_1 = "logfile_deo_dose_53mm.txt"
+# df_dose = pd.read_csv(data_dir + m_1, header=None)
+
+
 
 #1 steht für Dose 0 steht für nicht Dose
 labels = [1] * len(df_dose)
