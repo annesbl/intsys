@@ -8,8 +8,9 @@ from sklearn.metrics import accuracy_score
 directory = "/Users/annesoballa/Documents/intsys übung/projekt/messungen/"
 
 file = "logfile_deo_dose_53mm.txt"
-
+file2 = "logfile_jbl_speaker.txt"
 df = pd.read_csv(directory + file, header=None)
+df2 = pd.read_csv(directory + file2, header=None)
 
 
 def transform_data(df):
@@ -33,33 +34,30 @@ def transform_data(df):
     return result_df
 
 
-df_new = transform_data(df)
+df_new1 = transform_data(df)
+df_new2 = transform_data(df2)
+#df_new = pd.concat([df_new1, df_new2], axis=0)
 
 
 
+# spalte mit label für df_new1
+df_new1['label'] = 'dose'
 
-#df_new[0,'dose'] = 1 
+# spalte mit label für df_new2
+df_new2['label'] = 'speaker'
 
+# beide df zusammenführen
+df_new = pd.concat([df_new1, df_new2], axis=0)
 
-
-
-
-
-
-
-
-
-
-
-
-
+# label spalte an erste stelle bringen
+df_new = df_new[['label'] + [col for col in df_new.columns if col != 'label']]
 
 print(df_new)
-# print(df_new)
 
 
-X = df_new['label']
-y = df_new.drop('label', axis=1)
+
+y = df_new['label']
+X = df_new.drop('label', axis=1)
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, random_state=42)
 
@@ -72,7 +70,7 @@ y_predicted = clf.predict(X_test)
 accuracy = accuracy_score(y_test, y_predicted)
 print(f'Genauigkeit: {accuracy}')
 
-#* 100:.2f}%
+
 
 
 
