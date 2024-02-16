@@ -80,7 +80,7 @@ X = df_new.drop('label', axis=1)
 
 """Daten werden in Trainings und testdaten aufgeteilt"""
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, random_state=42)
+#X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, random_state=42)
 
 """support vector classifier und passt diesen den daten an"""
 # clf = svm.SVC(gamma=0.001)
@@ -176,7 +176,7 @@ from tensorflow.keras.layers import Dense
 from tensorflow.keras.utils import to_categorical
 
 # Ihre Daten X und Labels y
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.6, random_state=42)
 
 # Ein-Klassen-zu-viele-Klassen-Transformation für die Labels
 label_encoder = LabelEncoder()
@@ -200,37 +200,93 @@ model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accur
 # Training des Modells
 history = model.fit(X_train, y_train_categorical, epochs=50, batch_size=32, validation_data=(X_test, y_test_categorical))
 
-#plotten
+#plotten von verlust und genauigkeitskurve
 
-train_loss = history.history['loss']
-validation_loss = history.history['val_loss']
-train_accuracy = history.history['accuracy']
-validation_accuracy = history.history['val_accuracy']
+# train_loss = history.history['loss']
+# validation_loss = history.history['val_loss']
+# train_accuracy = history.history['accuracy']
+# validation_accuracy = history.history['val_accuracy']
 
-epochen = range(1, len(train_loss) +1)
+# epochen = range(1, len(train_loss) +1)
 
-plt.figure(figsize=(12,4))
-
-
-#verlust plot
-plt.subplot(1, 2, 1)
-plt.plot(epochen, train_loss, 'b-', label= "Traininsverlust")
-plt.plot(epochen, validation_loss, 'r-', label= "Validationsverlust")
-plt.title('Trainings- und Validationsverlust')
-plt.xlabel('Epochen')
-plt.ylabel('Verlust')
-plt.legend()
+# plt.figure(figsize=(12,4))
 
 
-#genauigkeit plot
-plt.subplot(1,2,2)
-plt.plot(epochen, train_accuracy, 'b-', label= "Trainingsgenauigkeit")
-plt.plot(epochen, validation_accuracy, 'r-', label= "Validationsgenauigkeit")
-plt.title('Trainings- und Validationsgenauigkeit')
-plt.xlabel('Epochen')
-plt.ylabel('Genauigkeit')
-plt.legend()
+# #verlust plot
+# plt.subplot(1, 2, 1)
+# plt.plot(epochen, train_loss, 'b-', label= "Traininsverlust")
+# plt.plot(epochen, validation_loss, 'r-', label= "Validationsverlust")
+# plt.title('Trainings- und Validationsverlust')
+# plt.xlabel('Epochen')
+# plt.ylabel('Verlust')
+# plt.legend()
 
 
-plt.tight_layout()
+# #genauigkeit plot
+# plt.subplot(1,2,2)
+# plt.plot(epochen, train_accuracy, 'b-', label= "Trainingsgenauigkeit")
+# plt.plot(epochen, validation_accuracy, 'r-', label= "Validationsgenauigkeit")
+# plt.title('Trainings- und Validationsgenauigkeit')
+# plt.xlabel('Epochen')
+# plt.ylabel('Genauigkeit')
+# plt.legend()
+
+
+# plt.tight_layout()
+# plt.show()
+
+
+# plotten von matrix
+
+# import matplotlib.pyplot as plt
+# import numpy as np
+
+# # Umwandeln der Verlust- und Genauigkeitswerte in numpy-Arrays
+# train_loss = np.array(history.history['loss'])
+# validation_loss = np.array(history.history['val_loss'])
+# train_accuracy = np.array(history.history['accuracy'])
+# validation_accuracy = np.array(history.history['val_accuracy'])
+
+# # Erstellen der Heatmap für die Verlustwerte
+# plt.figure(figsize=(12, 6))
+# plt.subplot(1, 2, 1)
+# plt.imshow(np.vstack([train_loss, validation_loss]), cmap='viridis', aspect='auto')
+# plt.colorbar(label='Loss')
+# plt.title('Trainings- und Validationsverlust')
+# plt.xlabel('Epochen')
+# plt.ylabel('Loss')
+
+# # Erstellen der Heatmap für die Genauigkeitswerte
+# plt.subplot(1, 2, 2)
+# plt.imshow(np.vstack([train_accuracy, validation_accuracy]), cmap='viridis', aspect='auto')
+# plt.colorbar(label='Accuracy')
+# plt.title('Trainings- und Validationsgenauigkeit')
+# plt.xlabel('Epochen')
+# plt.ylabel('Accuracy')
+
+# plt.tight_layout()
+# plt.show()
+
+
+#plotten von konfusionsmatrix
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import confusion_matrix
+
+# Vorhersagen des Modells für die Testdaten
+y_pred = model.predict(X_test)
+y_pred_classes = np.argmax(y_pred, axis=1)
+y_true_classes = np.argmax(y_test_categorical, axis=1)
+
+# Berechnung der Konfusionsmatrix
+conf_matrix = confusion_matrix(y_true_classes, y_pred_classes)
+
+# Plotten der Konfusionsmatrix
+plt.figure(figsize=(8, 6))
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', cbar=False)
+plt.title('Konfusionsmatrix')
+plt.xlabel('Vorhergesagte Klasse')
+plt.ylabel('Tatsächliche Klasse')
 plt.show()
+
