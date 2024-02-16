@@ -119,7 +119,7 @@ from tensorflow.keras.layers import Dense
 from tensorflow.keras.utils import to_categorical
 
 # Ihre Daten X und Labels y
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.6, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.6 , random_state=42)
 
 # Ein-Klassen-zu-viele-Klassen-Transformation für die Labels
 label_encoder = LabelEncoder()
