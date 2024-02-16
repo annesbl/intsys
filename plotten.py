@@ -8,30 +8,38 @@ m_2 = "logfile_rubicscube_1.txt"
 m_3 = "logfile_rubicscube_zweite_messung.txt"
 m_4 = "logfile_dose_zweite_messung.txt"
 m_5 = "logfile_dose_dritte_messung.txt"
+m_6 = "logfile_prisma.txt"
+m_7 = "logfile_jbl_speaker.txt"
+
+#Daten einlesen 
 
 df_dose = pd.read_csv(data_dir + m_1, header=None)
 df_cube = pd.read_csv(data_dir + m_2, header=None)
 df_cube2 = pd.read_csv(data_dir + m_3, header=None)
 df_dose2 = pd.read_csv(data_dir + m_4, header=None)
 df_dose3 = pd.read_csv(data_dir + m_5, header=None)
+df_prisma = pd.read_csv(data_dir + m_6, header=None)
+df_speaker = pd.read_csv(data_dir + m_7, header=None)
 
-# Daten einlesen
-df_dose = pd.read_csv(data_dir + m_1, header=None)
-df_cube = pd.read_csv(data_dir + m_2, header=None)
-df_cube2 = pd.read_csv(data_dir + m_3, header=None)
-df_dose2 = pd.read_csv(data_dir + m_4, header=None)
-df_dose3 = pd.read_csv(data_dir + m_5, header=None)
+
+# df_dose = pd.read_csv(data_dir + m_1, header=None)
+# df_cube = pd.read_csv(data_dir + m_2, header=None)
+# df_cube2 = pd.read_csv(data_dir + m_3, header=None)
+# df_dose2 = pd.read_csv(data_dir + m_4, header=None)
+# df_dose3 = pd.read_csv(data_dir + m_5, header=None)
 
 #POLAR
 # Subplots erstellen
-fig, axs = plt.subplots(1, 5, figsize=(20, 5), subplot_kw=dict(polar=True))
+fig, axs = plt.subplots(1, 7, figsize=(20, 5), subplot_kw=dict(polar=True))
 
 # Für jede Datei einen Plot erstellen
 axs[0].scatter(np.radians(df_dose.index * 6), df_dose[0], label='Dose 1', color='blue')
-axs[1].scatter(np.radians(df_cube.index * 6), df_cube[0], label='Rubiks Cube 1', color='red')
-axs[2].scatter(np.radians(df_cube2.index * 6), df_cube2[0], label='Rubiks Cube 2', color='green')
+axs[1].scatter(np.radians(df_cube.index * 6), df_cube[0], label='Rubiks Cube 1', color='blue')
+axs[2].scatter(np.radians(df_cube2.index * 6), df_cube2[0], label='Rubiks Cube 2', color='blue')
 axs[3].scatter(np.radians(df_dose2.index * 6), df_dose2[0], label='Dose 2', color='orange')
-axs[4].scatter(np.radians(df_dose3.index * 6), df_dose3[0], label='Dose 3', color='purple')
+axs[4].scatter(np.radians(df_dose3.index * 6), df_dose3[0], label='Dose 3', color='orange')
+axs[5].scatter(np.radians(df_prisma.index * 6), df_prisma[0], label='Prisma', color='purple')
+axs[6].scatter(np.radians(df_speaker.index * 6), df_speaker[0], label='Speaker', color='red')
 
 # Achsenbeschriftungen und Titel hinzufügen
 for ax in axs:
@@ -48,15 +56,16 @@ plt.show()
 
 #SCATTER
 
-fig, axs = plt.subplots(1, 5, figsize=(20, 5))
+fig, axs = plt.subplots(1, 7, figsize=(20, 5))
 
 # Für jede Datei einen Plot erstellen
 axs[0].scatter(df_dose.index, df_dose[0], label='Dose 1', color='blue')
-axs[1].scatter(df_cube.index, df_cube[0], label='Rubiks Cube 1', color='red')
-axs[2].scatter(df_cube2.index, df_cube2[0], label='Rubiks Cube 2', color='green')
+axs[1].scatter(df_cube.index, df_cube[0], label='Rubiks Cube 1', color='blue')
+axs[2].scatter(df_cube2.index, df_cube2[0], label='Rubiks Cube 2', color='blue')
 axs[3].scatter(df_dose2.index, df_dose2[0], label='Dose 2', color='orange')
-axs[4].scatter(df_dose3.index, df_dose3[0], label='Dose 3', color='purple')
-
+axs[4].scatter(df_dose3.index, df_dose3[0], label='Dose 3', color='orange')
+axs[5].scatter(df_prisma.index, df_prisma[0], label='Prisma', color='purple')
+axs[6].scatter(df_speaker.index, df_speaker[0], label='Speaker', color='red')
 # Achsenbeschriftungen, Titel, und Limits hinzufügen
 for ax in axs:
     ax.set_xlabel('Index')
