@@ -118,9 +118,12 @@ from sklearn.preprocessing import LabelEncoder
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.layers import Dropout
+from tensorflow.keras.regularizers import l1, l2
+
 
 # Ihre Daten X und Labels y
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25 , random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.75 , random_state=42)
 
 # Ein-Klassen-zu-viele-Klassen-Transformation für die Labels
 label_encoder = LabelEncoder()
@@ -136,8 +139,10 @@ y_test_categorical = to_categorical(y_test_encoded)
 
 # Erstellen des neuronalen Netzwerks
 model = Sequential([
-                    Dense(64, activation='relu', input_shape=(X_train.shape[1],)),
-                    Dense(64, activation='relu'),
+                    Dense(64, activation='relu', input_shape=(X_train.shape[1],), kernel_regularizer=l2(0.01)),
+                    #Dropout(0.1),
+                    Dense(64, activation='relu', kernel_regularizer=l2(0.01)),
+                    #Dropout(0.1),
                     Dense(num_classes, activation='softmax')  # anzahl der ausgabeneuronen entspricht anzahl der klassen
                     ])
 
@@ -217,23 +222,23 @@ plt.show()
 
 #plotten von konfusionsmatrix
 
-# import matplotlib.pyplot as plt
-# import seaborn as sns
-# from sklearn.metrics import confusion_matrix
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import confusion_matrix
 
-# # Vorhersagen des Modells für die Testdaten
-# y_pred = model.predict(X_test)
-# y_pred_classes = np.argmax(y_pred, axis=1)
-# y_true_classes = np.argmax(y_test_categorical, axis=1)
+# Vorhersagen des Modells für die Testdaten
+y_pred = model.predict(X_test)
+y_pred_classes = np.argmax(y_pred, axis=1)
+y_true_classes = np.argmax(y_test_categorical, axis=1)
 
-# # Berechnung der Konfusionsmatrix
-# conf_matrix = confusion_matrix(y_true_classes, y_pred_classes)
+# Berechnung der Konfusionsmatrix
+conf_matrix = confusion_matrix(y_true_classes, y_pred_classes)
 
-# # Plotten der Konfusionsmatrix
-# plt.figure(figsize=(8, 6))
-# sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', cbar=False)
-# plt.title('Konfusionsmatrix')
-# plt.xlabel('Vorhergesagte Klasse')
-# plt.ylabel('Tatsächliche Klasse')
-# plt.show()
+# Plotten der Konfusionsmatrix
+plt.figure(figsize=(8, 6))
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', cbar=False)
+plt.title('Konfusionsmatrix')
+plt.xlabel('Vorhergesagte Klasse')
+plt.ylabel('Tatsächliche Klasse')
+plt.show()
 
