@@ -12,17 +12,17 @@ from sklearn.metrics import accuracy_score
 directory = "/Users/annesoballa/Documents/intsys übung/projekt/messungen/"
 
 file = "logfile_deo_dose_53mm.txt"
-file2 = "logfile_dose_zweite_messung.txt"
+#file2 = "logfile_dose_zweite_messung.txt"
 #file3 = "logfile_dose_dritte_messung.txt"
 file4 = "logfile_rubicscube_1.txt"
-file5 = "logfile_rubicscube_zweite_messung.txt"
+#file5 = "logfile_rubicscube_zweite_messung.txt"
 file6 = "logfile_prisma.txt"
 file7 = "logfile_jbl_speaker.txt"
 
 df = pd.read_csv(directory + file , header=None)
-df2 = pd.read_csv(directory + file2 , header=None)
+#df2 = pd.read_csv(directory + file2 , header=None)
 df3 = pd.read_csv(directory + file4, header=None)
-df4 = pd.read_csv(directory + file5 , header=None)
+#df4 = pd.read_csv(directory + file5 , header=None)
 df5 = pd.read_csv(directory + file6 , header=None)
 df6 = pd.read_csv(directory + file7 , header=None)
 
@@ -50,9 +50,9 @@ def transform_data(df):
 
 
 df_new1 = transform_data(df)
-df_new2 = transform_data(df2)
+#df_new2 = transform_data(df2)
 df_new3 = transform_data(df3)
-df_new4 = transform_data(df4)
+#df_new4 = transform_data(df4)
 df_new5 = transform_data(df5)
 df_new6 = transform_data(df6)
 #df_new = pd.concat([df_new1, df_new2], axis=0)
@@ -62,11 +62,11 @@ df_new6 = transform_data(df6)
 
 # spalte mit label für df_new1
 df_new1['label'] = 'dose'
-df_new2['label'] = 'dose'
+#df_new2['label'] = 'dose'
 
 # spalte mit label für df_new3&4
 df_new3['label'] = 'rubicscube'
-df_new4['label'] = 'rubicscube'
+#df_new4['label'] = 'rubicscube'
 
 # spalte mit label für df_new5
 df_new5['label'] = 'prisma'
@@ -75,12 +75,13 @@ df_new5['label'] = 'prisma'
 df_new6['label'] = 'speaker'
 
 # beide df zusammenführen
-df_new1 = pd.concat([df_new1, df_new2], axis=0)
-df_new2 = pd.concat([df_new3, df_new4], axis=0)
-df_new3 = pd.concat([df_new5, df_new6], axis=0)
+#df_new1 = pd.concat([df_new1, df_new2], axis=0)
+#df_new2 = pd.concat([df_new3, df_new4], axis=0)
+df_new1 = pd.concat([df_new1, df_new3], axis=0)
+df_new2 = pd.concat([df_new5, df_new6], axis=0)
 
+#df_new = pd.concat([df_new1, df_new3], axis=0)
 df_new = pd.concat([df_new1, df_new2], axis=0)
-df_new = pd.concat([df_new, df_new3], axis=0)
 
 # label spalte an erste stelle bringen
 df_new = df_new[['label'] + [col for col in df_new.columns if col != 'label']]
@@ -119,7 +120,7 @@ from tensorflow.keras.layers import Dense
 from tensorflow.keras.utils import to_categorical
 
 # Ihre Daten X und Labels y
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.6 , random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25 , random_state=42)
 
 # Ein-Klassen-zu-viele-Klassen-Transformation für die Labels
 label_encoder = LabelEncoder()
