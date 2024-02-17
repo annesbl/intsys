@@ -247,29 +247,40 @@ plt.show()
 
 # #GENAUIGKEIT
 # #Kreuzvalidierungsgenauigkeit:  [0.73469388 0.85714286 0.73469388 0.75510204 0.75      ]
-# #Durchschnittliche Kreuzvalidierungsgenauigkeit:  0.7663265306122449
+# #Durchschnittliche Kreuzvalidierungsgenauigkeit:  0.7663265306122449"""
 
 
 
 
 
-# # Berechne die Trainingsgenauigkeit
-# # Definiere dein Modell mit StandardScaler
-# model = make_pipeline(StandardScaler(), SVC())
+# Berechne die Trainingsgenauigkeit
+# Definiere dein Modell mit StandardScaler
+model = make_pipeline(StandardScaler(), SVC())
 
-# # Trainiere das Modell auf den Trainingsdaten
-# model.fit(X_train, y_train)
+# Trainiere das Modell auf den Trainingsdaten
+model.fit(X_train, y_train)
 
-# # Mache Vorhersagen auf den Trainingsdaten
-# y_train_pred = model.predict(X_train)
+# Mache Vorhersagen auf den Trainingsdaten
+y_train_pred = model.predict(X_train)
 
-# # Berechne die Trainingsgenauigkeit
-# train_accuracy = accuracy_score(y_train, y_train_pred)
-# print("Trainingsgenauigkeit: ", train_accuracy)
+# Berechne die Trainingsgenauigkeit
+train_accuracy = accuracy_score(y_train, y_train_pred)
+print("Trainingsgenauigkeit: ", train_accuracy)
 
-# # Mache Vorhersagen auf den Testdaten
-# y_pred = model.predict(X_test)
+# Mache Vorhersagen auf den Testdaten
+y_pred = model.predict(X_test)
 
+
+#MATRIX DAZU
+conf_matrix = confusion_matrix(y_test, y_pred)
+
+# Plotten der Konfusionsmatrix
+plt.figure(figsize=(8, 6))
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', cbar=False)
+plt.title('Konfusionsmatrix')
+plt.xlabel('Vorhergesagte Klasse')
+plt.ylabel('Tatsächliche Klasse')
+plt.show()
 # #Trainingsgenauigkeit:  0.8032786885245902"""
 
 #TRAINING GRÖßER ALS TEST --> OVERFITTING
