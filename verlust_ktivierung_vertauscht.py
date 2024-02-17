@@ -12,17 +12,17 @@ from sklearn.metrics import accuracy_score
 directory = "/Users/annesoballa/Documents/intsys übung/projekt/messungen/"
 
 file = "logfile_deo_dose_53mm.txt"
-file2 = "logfile_dose_zweite_messung.txt"
+#file2 = "logfile_dose_zweite_messung.txt"
 #file3 = "logfile_dose_dritte_messung.txt"
 file4 = "logfile_rubicscube_1.txt"
-file5 = "logfile_rubicscube_zweite_messung.txt"
+#file5 = "logfile_rubicscube_zweite_messung.txt"
 file6 = "logfile_prisma.txt"
 file7 = "logfile_jbl_speaker.txt"
 
 df = pd.read_csv(directory + file , header=None)
-df2 = pd.read_csv(directory + file2 , header=None)
+#df2 = pd.read_csv(directory + file2 , header=None)
 df3 = pd.read_csv(directory + file4, header=None)
-df4 = pd.read_csv(directory + file5 , header=None)
+#df4 = pd.read_csv(directory + file5 , header=None)
 df5 = pd.read_csv(directory + file6 , header=None)
 df6 = pd.read_csv(directory + file7 , header=None)
 
@@ -50,9 +50,9 @@ def transform_data(df):
 
 
 df_new1 = transform_data(df)
-df_new2 = transform_data(df2)
+#df_new2 = transform_data(df2)
 df_new3 = transform_data(df3)
-df_new4 = transform_data(df4)
+#df_new4 = transform_data(df4)
 df_new5 = transform_data(df5)
 df_new6 = transform_data(df6)
 #df_new = pd.concat([df_new1, df_new2], axis=0)
@@ -62,11 +62,11 @@ df_new6 = transform_data(df6)
 
 # spalte mit label für df_new1
 df_new1['label'] = 'dose'
-df_new2['label'] = 'dose'
+#df_new2['label'] = 'dose'
 
 # spalte mit label für df_new3&4
 df_new3['label'] = 'rubicscube'
-df_new4['label'] = 'rubicscube'
+#df_new4['label'] = 'rubicscube'
 
 # spalte mit label für df_new5
 df_new5['label'] = 'prisma'
@@ -75,12 +75,13 @@ df_new5['label'] = 'prisma'
 df_new6['label'] = 'speaker'
 
 # beide df zusammenführen
-df_new1 = pd.concat([df_new1, df_new2], axis=0)
-df_new2 = pd.concat([df_new3, df_new4], axis=0)
-df_new3 = pd.concat([df_new5, df_new6], axis=0)
+#df_new1 = pd.concat([df_new1, df_new2], axis=0)
+#df_new2 = pd.concat([df_new3, df_new4], axis=0)
+df_new1 = pd.concat([df_new1, df_new3], axis=0)
+df_new2 = pd.concat([df_new5, df_new6], axis=0)
 
+#df_new = pd.concat([df_new1, df_new3], axis=0)
 df_new = pd.concat([df_new1, df_new2], axis=0)
-df_new = pd.concat([df_new, df_new3], axis=0)
 
 # label spalte an erste stelle bringen
 df_new = df_new[['label'] + [col for col in df_new.columns if col != 'label']]
@@ -117,9 +118,12 @@ from sklearn.preprocessing import LabelEncoder
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.layers import Dropout
+from tensorflow.keras.regularizers import l1, l2
+from tensorflow.keras.callbacks import EarlyStopping
 
 # Ihre Daten X und Labels y
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.6 , random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.75 , random_state=42)
 
 # Ein-Klassen-zu-viele-Klassen-Transformation für die Labels
 label_encoder = LabelEncoder()
@@ -135,16 +139,30 @@ y_test_categorical = to_categorical(y_test_encoded)
 
 # Erstellen des neuronalen Netzwerks
 model = Sequential([
-                    Dense(64, activation='tanh', input_shape=(X_train.shape[1],)),
-                    Dense(64, activation='tanh'),
-                    Dense(num_classes, activation='sigmoid')  # anzahl der ausgabeneuronen entspricht anzahl der klassen
+                    Dense(64, activation='relu', input_shape=(X_train.shape[1],)),
+                    Dropout(0.6),
+                    Dense(64, activation='relu'),
+                    Dropout(0.6),
+                    Dense(num_classes, activation='softmax')  # anzahl der ausgabeneuronen entspricht anzahl der klassen
                     ])
 
 # Kompilieren des Modells
-model.compile(optimizer='sgd', loss='mean_squared_error', metrics=['accuracy'])
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+
+# Definieren Sie die EarlyStopping Rückruffunktion
+#early_stopping = EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)
+#callbacks=[early_stopping]
+# Hinzufügen von Rauschen zu den Trainings- und Testdaten
+#noisy_X_train = X_train + np.random.normal(loc=0, scale=0.1, size=X_train.shape)
+#noisy_X_test = X_test + np.random.normal(loc=0, scale=0.1, size=X_test.shape)
+
+# Training des Modells mit rauschigen Daten
+#history = model.fit(noisy_X_train, y_train_categorical, epochs=50, validation_data=(noisy_X_test, y_test_categorical))
+
 
 # Training des Modells
-history = model.fit(X_train, y_train_categorical, epochs=50, batch_size=32, validation_data=(X_test, y_test_categorical))
+history = model.fit(X_train, y_train_categorical, epochs=50, batch_size=32, 
+                    validation_data=(X_test, y_test_categorical))
 
 #plotten von verlust und genauigkeitskurve
 
@@ -216,23 +234,23 @@ plt.show()
 
 #plotten von konfusionsmatrix
 
-# import matplotlib.pyplot as plt
-# import seaborn as sns
-# from sklearn.metrics import confusion_matrix
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import confusion_matrix
 
-# # Vorhersagen des Modells für die Testdaten
-# y_pred = model.predict(X_test)
-# y_pred_classes = np.argmax(y_pred, axis=1)
-# y_true_classes = np.argmax(y_test_categorical, axis=1)
+# Vorhersagen des Modells für die Testdaten
+y_pred = model.predict(X_test)
+y_pred_classes = np.argmax(y_pred, axis=1)
+y_true_classes = np.argmax(y_test_categorical, axis=1)
 
-# # Berechnung der Konfusionsmatrix
-# conf_matrix = confusion_matrix(y_true_classes, y_pred_classes)
+# Berechnung der Konfusionsmatrix
+conf_matrix = confusion_matrix(y_true_classes, y_pred_classes)
 
-# # Plotten der Konfusionsmatrix
-# plt.figure(figsize=(8, 6))
-# sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', cbar=False)
-# plt.title('Konfusionsmatrix')
-# plt.xlabel('Vorhergesagte Klasse')
-# plt.ylabel('Tatsächliche Klasse')
-# plt.show()
+# Plotten der Konfusionsmatrix
+plt.figure(figsize=(8, 6))
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', cbar=False)
+plt.title('Konfusionsmatrix')
+plt.xlabel('Vorhergesagte Klasse')
+plt.ylabel('Tatsächliche Klasse')
+plt.show()
 
