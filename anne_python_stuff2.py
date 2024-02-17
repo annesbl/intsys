@@ -12,7 +12,7 @@ from sklearn.metrics import accuracy_score
 directory = "/Users/annesoballa/Documents/intsys übung/projekt/messungen/"
 
 file = "logfile_deo_dose_53mm.txt"
-#file2 = "logfile_dose_zweite_messung.txt"
+file2 = "logfile_dose_zweite_messung.txt"
 #file3 = "logfile_dose_dritte_messung.txt"
 file4 = "logfile_rubicscube_1.txt"
 #file5 = "logfile_rubicscube_zweite_messung.txt"
@@ -20,7 +20,7 @@ file6 = "logfile_prisma.txt"
 file7 = "logfile_jbl_speaker.txt"
 
 df = pd.read_csv(directory + file , header=None)
-#df2 = pd.read_csv(directory + file2 , header=None)
+df2 = pd.read_csv(directory + file2 , header=None)
 df3 = pd.read_csv(directory + file4, header=None)
 #df4 = pd.read_csv(directory + file5 , header=None)
 df5 = pd.read_csv(directory + file6 , header=None)
@@ -50,7 +50,7 @@ def transform_data(df):
 
 
 df_new1 = transform_data(df)
-#df_new2 = transform_data(df2)
+df_new2 = transform_data(df2)
 df_new3 = transform_data(df3)
 #df_new4 = transform_data(df4)
 df_new5 = transform_data(df5)
@@ -62,7 +62,7 @@ df_new6 = transform_data(df6)
 
 # spalte mit label für df_new1
 df_new1['label'] = 'dose'
-#df_new2['label'] = 'dose'
+df_new2['label'] = 'dose'
 
 # spalte mit label für df_new3&4
 df_new3['label'] = 'rubicscube'
@@ -75,7 +75,7 @@ df_new5['label'] = 'prisma'
 df_new6['label'] = 'speaker'
 
 # beide df zusammenführen
-#df_new1 = pd.concat([df_new1, df_new2], axis=0)
+df_new1 = pd.concat([df_new1, df_new2], axis=0)
 #df_new2 = pd.concat([df_new3, df_new4], axis=0)
 df_new1 = pd.concat([df_new1, df_new3], axis=0)
 df_new2 = pd.concat([df_new5, df_new6], axis=0)
@@ -120,6 +120,17 @@ from tensorflow.keras.layers import Dense
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.layers import Dropout
 from tensorflow.keras.regularizers import l1, l2
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import confusion_matrix
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+from sklearn.model_selection import cross_val_score
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.svm import SVC
 
 
 # Ihre Daten X und Labels y
@@ -139,10 +150,10 @@ y_test_categorical = to_categorical(y_test_encoded)
 
 # Erstellen des neuronalen Netzwerks
 model = Sequential([
-                    Dense(64, activation='relu', input_shape=(X_train.shape[1],), kernel_regularizer=l2(0.01)),
-                    #Dropout(0.1),
-                    Dense(64, activation='relu', kernel_regularizer=l2(0.01)),
-                    #Dropout(0.1),
+                    Dense(64, activation='relu', input_shape=(X_train.shape[1],),),
+                    Dropout(0.1),
+                    Dense(64, activation='relu', ),
+                    Dropout(0.1),
                     Dense(num_classes, activation='softmax')  # anzahl der ausgabeneuronen entspricht anzahl der klassen
                     ])
 
@@ -188,57 +199,77 @@ plt.tight_layout()
 plt.show()
 
 
-# plotten von matrix
 
-# import matplotlib.pyplot as plt
-# import numpy as np
 
-# # Umwandeln der Verlust- und Genauigkeitswerte in numpy-Arrays
-# train_loss = np.array(history.history['loss'])
-# validation_loss = np.array(history.history['val_loss'])
-# train_accuracy = np.array(history.history['accuracy'])
-# validation_accuracy = np.array(history.history['val_accuracy'])
+# #plotten von konfusionsmatrix
 
-# # Erstellen der Heatmap für die Verlustwerte
-# plt.figure(figsize=(12, 6))
-# plt.subplot(1, 2, 1)
-# plt.imshow(np.vstack([train_loss, validation_loss]), cmap='viridis', aspect='auto')
-# plt.colorbar(label='Loss')
-# plt.title('Trainings- und Validationsverlust')
-# plt.xlabel('Epochen')
-# plt.ylabel('Loss')
 
-# # Erstellen der Heatmap für die Genauigkeitswerte
-# plt.subplot(1, 2, 2)
-# plt.imshow(np.vstack([train_accuracy, validation_accuracy]), cmap='viridis', aspect='auto')
-# plt.colorbar(label='Accuracy')
-# plt.title('Trainings- und Validationsgenauigkeit')
-# plt.xlabel('Epochen')
-# plt.ylabel('Accuracy')
+# # Vorhersagen des Modells für die Testdaten
+# y_pred = model.predict(X_test)
+# y_pred_classes = np.argmax(y_pred, axis=1)
+# y_true_classes = np.argmax(y_test_categorical, axis=1)
 
-# plt.tight_layout()
+# # Berechnung der Konfusionsmatrix
+# conf_matrix = confusion_matrix(y_true_classes, y_pred_classes)
+
+# # Plotten der Konfusionsmatrix
+# plt.figure(figsize=(8, 6))
+# sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', cbar=False)
+# plt.title('Konfusionsmatrix')
+# plt.xlabel('Vorhergesagte Klasse')
+# plt.ylabel('Tatsächliche Klasse')
 # plt.show()
 
 
-#plotten von konfusionsmatrix
 
-import matplotlib.pyplot as plt
-import seaborn as sns
-from sklearn.metrics import confusion_matrix
+"""# # Definiere X und y
+# X = df_new.drop('label', axis=1)
+# y = df_new['label']
 
-# Vorhersagen des Modells für die Testdaten
-y_pred = model.predict(X_test)
-y_pred_classes = np.argmax(y_pred, axis=1)
-y_true_classes = np.argmax(y_test_categorical, axis=1)
+# # Definiere dein Modell
+# model = make_pipeline(StandardScaler(), SVC())
 
-# Berechnung der Konfusionsmatrix
-conf_matrix = confusion_matrix(y_true_classes, y_pred_classes)
+# # Führe Kreuzvalidierung durch
+# cv_scores = cross_val_score(model, X, y, cv=5)  # Hier könntest du die Anzahl der Folds (cv) anpassen
 
-# Plotten der Konfusionsmatrix
-plt.figure(figsize=(8, 6))
-sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', cbar=False)
-plt.title('Konfusionsmatrix')
-plt.xlabel('Vorhergesagte Klasse')
-plt.ylabel('Tatsächliche Klasse')
-plt.show()
+# # Gib die Ergebnisse aus
+# print("Kreuzvalidierungsgenauigkeit: ", cv_scores)
+# print("Durchschnittliche Kreuzvalidierungsgenauigkeit: ", np.mean(cv_scores))
 
+# # Plotten der Konfusionsmatrix
+# # plt.figure(figsize=(8, 6))
+# # sns.heatmap(confusion_matrix, annot=True, fmt='d', cmap='Blues', cbar=False)
+# # plt.title('Konfusionsmatrix')
+# # plt.xlabel('Vorhergesagte Klasse')
+# # plt.ylabel('Tatsächliche Klasse')
+# # plt.show()
+
+
+# #GENAUIGKEIT
+# #Kreuzvalidierungsgenauigkeit:  [0.73469388 0.85714286 0.73469388 0.75510204 0.75      ]
+# #Durchschnittliche Kreuzvalidierungsgenauigkeit:  0.7663265306122449
+
+
+
+
+
+# # Berechne die Trainingsgenauigkeit
+# # Definiere dein Modell mit StandardScaler
+# model = make_pipeline(StandardScaler(), SVC())
+
+# # Trainiere das Modell auf den Trainingsdaten
+# model.fit(X_train, y_train)
+
+# # Mache Vorhersagen auf den Trainingsdaten
+# y_train_pred = model.predict(X_train)
+
+# # Berechne die Trainingsgenauigkeit
+# train_accuracy = accuracy_score(y_train, y_train_pred)
+# print("Trainingsgenauigkeit: ", train_accuracy)
+
+# # Mache Vorhersagen auf den Testdaten
+# y_pred = model.predict(X_test)
+
+# #Trainingsgenauigkeit:  0.8032786885245902"""
+
+#TRAINING GRÖßER ALS TEST --> OVERFITTING
