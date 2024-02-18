@@ -46,7 +46,7 @@ def transform_data(df):
         output_data.append(one_turn)
     dfs_reset_index = [df.reset_index(drop=True) for df in output_data]
     result_df = pd.concat(dfs_reset_index, axis=1)
-    return result_df
+    return result_df.T
 
 
 df_new1 = transform_data(df)
