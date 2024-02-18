@@ -140,6 +140,8 @@ model = Sequential([
                     Dropout(0.1),
                     Dense(64, activation='relu', ),
                     Dropout(0.1),
+                    Dense(64, activation='relu', ),
+                    Dropout(0.1),
                     Dense(num_classes, activation='softmax')  # anzahl der ausgabeneuronen entspricht anzahl der klassen
                     ])
 
