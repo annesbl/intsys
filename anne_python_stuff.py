@@ -290,3 +290,46 @@ plt.xlabel('Vorhergesagte Klasse')
 plt.ylabel('Tatsächliche Klasse')
 plt.show()
 
+"""# # Definiere X und y
+# X = df_new.drop('label', axis=1)
+# y = df_new['label']
+
+# # Definiere dein Modell
+# model = make_pipeline(StandardScaler(), SVC())
+
+# # Führe Kreuzvalidierung durch
+# cv_scores = cross_val_score(model, X, y, cv=5)  # Hier könntest du die Anzahl der Folds (cv) anpassen
+
+# # Gib die Ergebnisse aus
+# print("Kreuzvalidierungsgenauigkeit: ", cv_scores)
+# print("Durchschnittliche Kreuzvalidierungsgenauigkeit: ", np.mean(cv_scores))
+
+# # Plotten der Konfusionsmatrix
+# # plt.figure(figsize=(8, 6))
+# # sns.heatmap(confusion_matrix, annot=True, fmt='d', cmap='Blues', cbar=False)
+# # plt.title('Konfusionsmatrix')
+# # plt.xlabel('Vorhergesagte Klasse')
+# # plt.ylabel('Tatsächliche Klasse')
+# # plt.show()
+
+
+# #GENAUIGKEIT
+# #Kreuzvalidierungsgenauigkeit:  [0.73469388 0.85714286 0.73469388 0.75510204 0.75      ]
+# #Durchschnittliche Kreuzvalidierungsgenauigkeit:  0.7663265306122449"""
+
+
+"""Daten werden in Trainings und testdaten aufgeteilt"""
+
+#X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, random_state=42)
+
+"""support vector classifier und passt diesen den daten an"""
+# clf = svm.SVC(gamma=0.001)
+# clf.fit(X_train, y_train)
+
+# """sagt labels für das testset vorher"""
+# y_predicted = clf.predict(X_test)
+
+# accuracy = accuracy_score(y_test, y_predicted)
+# print(f'Genauigkeit: {accuracy}')
+
+# genauigkeit war bei 0,7
