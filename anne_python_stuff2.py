@@ -9,7 +9,7 @@ from sklearn.metrics import accuracy_score
    teilt sie in trainings und test sets auf, trainiert einen support vector classifier 
     und bewertet die genauigkeit"""
 
-directory = "messdaten/"
+directory = "/Users/annesoballa/Documents/intsys übung/projekt/messungen/"
 
 file = "logfile_deo_dose_53mm.txt"
 file2 = "logfile_dose_zweite_messung.txt"
@@ -137,11 +137,11 @@ y_test_categorical = to_categorical(y_test_encoded)
 # Erstellen des neuronalen Netzwerks
 model = Sequential([
                     Dense(64, activation='relu', input_shape=(X_train.shape[1],),),
-                    Dropout(0.1),
+                    Dropout(0.3),
                     Dense(64, activation='relu', ),
-                    Dropout(0.1),
+                    Dropout(0.3),
                     Dense(64, activation='relu', ),
-                    Dropout(0.1),
+                    Dropout(0.3),
                     Dense(num_classes, activation='softmax')  # anzahl der ausgabeneuronen entspricht anzahl der klassen
                     ])
 
