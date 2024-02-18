@@ -9,7 +9,7 @@ from sklearn.metrics import accuracy_score
    teilt sie in trainings und test sets auf, trainiert einen support vector classifier 
     und bewertet die genauigkeit"""
 
-directory = "/Users/annesoballa/Documents/intsys übung/projekt/messungen/"
+directory = "messdaten/"
 
 file = "logfile_deo_dose_53mm.txt"
 file2 = "logfile_dose_zweite_messung.txt"
