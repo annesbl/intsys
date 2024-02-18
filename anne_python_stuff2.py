@@ -94,21 +94,7 @@ y = df_new['label']
 X = df_new.drop('label', axis=1)
 
 
-"""Daten werden in Trainings und testdaten aufgeteilt"""
 
-#X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, random_state=42)
-
-"""support vector classifier und passt diesen den daten an"""
-# clf = svm.SVC(gamma=0.001)
-# clf.fit(X_train, y_train)
-
-# """sagt labels für das testset vorher"""
-# y_predicted = clf.predict(X_test)
-
-# accuracy = accuracy_score(y_test, y_predicted)
-# print(f'Genauigkeit: {accuracy}')
-
-# genauigkeit war bei 0,7
 
 
 
@@ -222,65 +208,103 @@ plt.show()
 
 
 
-"""# # Definiere X und y
-# X = df_new.drop('label', axis=1)
-# y = df_new['label']
 
-# # Definiere dein Modell
+
+
+
+
+# # Berechne die Trainingsgenauigkeit
+# # Definiere dein Modell mit StandardScaler
 # model = make_pipeline(StandardScaler(), SVC())
 
-# # Führe Kreuzvalidierung durch
-# cv_scores = cross_val_score(model, X, y, cv=5)  # Hier könntest du die Anzahl der Folds (cv) anpassen
+# # Trainiere das Modell auf den Trainingsdaten
+# model.fit(X_train, y_train)
 
-# # Gib die Ergebnisse aus
-# print("Kreuzvalidierungsgenauigkeit: ", cv_scores)
-# print("Durchschnittliche Kreuzvalidierungsgenauigkeit: ", np.mean(cv_scores))
+# # Mache Vorhersagen auf den Trainingsdaten
+# y_train_pred = model.predict(X_train)
+
+# # Berechne die Trainingsgenauigkeit
+# train_accuracy = accuracy_score(y_train, y_train_pred)
+# print("Trainingsgenauigkeit: ", train_accuracy)
+
+# # Mache Vorhersagen auf den Testdaten
+# y_pred = model.predict(X_test)
+
+
+# #MATRIX DAZU
+# conf_matrix = confusion_matrix(y_test, y_pred)
 
 # # Plotten der Konfusionsmatrix
-# # plt.figure(figsize=(8, 6))
-# # sns.heatmap(confusion_matrix, annot=True, fmt='d', cmap='Blues', cbar=False)
-# # plt.title('Konfusionsmatrix')
-# # plt.xlabel('Vorhergesagte Klasse')
-# # plt.ylabel('Tatsächliche Klasse')
-# # plt.show()
+# plt.figure(figsize=(8, 6))
+# sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', cbar=False)
+# plt.title('Konfusionsmatrix')
+# plt.xlabel('Vorhergesagte Klasse')
+# plt.ylabel('Tatsächliche Klasse')
+# plt.show()
+# # #Trainingsgenauigkeit:  0.8032786885245902"""
+
+# #TRAINING GRÖßER ALS TEST --> OVERFITTING
 
 
-# #GENAUIGKEIT
-# #Kreuzvalidierungsgenauigkeit:  [0.73469388 0.85714286 0.73469388 0.75510204 0.75      ]
-# #Durchschnittliche Kreuzvalidierungsgenauigkeit:  0.7663265306122449"""
+#NEUE DATEN VORHERSAGEN
+
+# new_data = "logfile_rubicscube_zweite_messung.txt"
+
+# new_data = pd.read_csv(directory + new_data , header=None)
+
+# new_data = transform_data(new_data)
+
+# # Stelle sicher, dass die Spaltenreihenfolge gleich ist wie bei den Trainingsdaten
+# #new_data_transformed = new_data[X.columns]
+
+# predicted_classes = model.predict(new_data)
+
+# predicted_labels = label_encoder.inverse_transform(np.argmax(predicted_classes, axis=1))
+
+# print("Klasse der neuen Daten:")
+# print(predicted_labels)
 
 
 
 
+def transform_data_for_prediction(df, expected_num_features):
+    """
+    Transforms the data for prediction by adding or removing features as needed.
+    """
+    # Hier fügen Sie Code ein, um die Daten entsprechend zu transformieren, 
+    # so dass sie mit den erwarteten Merkmalen des Modells übereinstimmen.
+    # Dies kann durch Hinzufügen oder Entfernen von Merkmalen erfolgen.
 
-# Berechne die Trainingsgenauigkeit
-# Definiere dein Modell mit StandardScaler
-model = make_pipeline(StandardScaler(), SVC())
+    # Beispiel: Füllen Sie die fehlenden Merkmale mit Nullen auf, falls erforderlich
+    if len(df.columns) < expected_num_features:
+        # Füllen Sie die fehlenden Merkmale mit Nullen auf
+        num_missing_features = expected_num_features - len(df.columns)
+        missing_features = pd.DataFrame(np.zeros((len(df), num_missing_features)))
+        df = pd.concat([df, missing_features], axis=1)
 
-# Trainiere das Modell auf den Trainingsdaten
-model.fit(X_train, y_train)
+    # Beispiel: Reduzieren Sie die Dimensionen der Daten, falls erforderlich
+    if len(df.columns) > expected_num_features:
+        # Reduzieren Sie die Anzahl der Merkmale auf die erwartete Anzahl
+        df = df.iloc[:, :expected_num_features]
 
-# Mache Vorhersagen auf den Trainingsdaten
-y_train_pred = model.predict(X_train)
+    return df
 
-# Berechne die Trainingsgenauigkeit
-train_accuracy = accuracy_score(y_train, y_train_pred)
-print("Trainingsgenauigkeit: ", train_accuracy)
+# Verwenden Sie die Funktion, um die Daten für die Vorhersage vorzubereiten
+def predict_class_for_file(file_path, model, label_encoder, expected_num_features):
+    # Einlesen der Datei
+    df = pd.read_csv(file_path, header=None)
+    
+    # Transformation der Daten
+    df_transformed = transform_data_for_prediction(df, expected_num_features)
+    
+    # Vorhersage der Klasse
+    predicted_classes = model.predict(df_transformed)
+    predicted_labels = label_encoder.inverse_transform(np.argmax(predicted_classes, axis=1))
+    
+    return predicted_labels
 
-# Mache Vorhersagen auf den Testdaten
-y_pred = model.predict(X_test)
+# Verwenden Sie die Funktion, um die Klasse für eine beliebige Datei vorherzusagen
+file_path = "/Users/annesoballa/Documents/intsys übung/projekt/messungen/logfile_rubicscube_zweite_messung.txt"  # Geben Sie hier den Pfad zu Ihrer Datei an
+predicted_class = predict_class_for_file(file_path, model, label_encoder, expected_num_features=59536)
+print("Vorhergesagte Klasse für die Datei:", predicted_class)
 
-
-#MATRIX DAZU
-conf_matrix = confusion_matrix(y_test, y_pred)
-
-# Plotten der Konfusionsmatrix
-plt.figure(figsize=(8, 6))
-sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', cbar=False)
-plt.title('Konfusionsmatrix')
-plt.xlabel('Vorhergesagte Klasse')
-plt.ylabel('Tatsächliche Klasse')
-plt.show()
-# #Trainingsgenauigkeit:  0.8032786885245902"""
-
-#TRAINING GRÖßER ALS TEST --> OVERFITTING
