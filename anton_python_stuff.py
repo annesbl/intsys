@@ -10,6 +10,7 @@ file = "logfile_deo_dose_53mm.txt"
 
 df = pd.read_csv(directory + file, header=None)
 
+
 def transform_data(df):
     """
     input 305 measurement points, > 5 turns * 61 measurements
@@ -22,8 +23,10 @@ def transform_data(df):
     df_transposed = df
     output_data = []
 
-    for i in range(244): # 244 because 305 - 61 (letzte Umdrehung wird rausgenommen, damit jeder neue teil eine komplette umdrehung hat)
-        one_turn = df_transposed.iloc[i:i+61, :]
+    for i in range(
+        244
+    ):  # 244 because 305 - 61 (letzte Umdrehung wird rausgenommen, damit jeder neue teil eine komplette umdrehung hat)
+        one_turn = df_transposed.iloc[i : i + 61, :]
         # print(one_turn)
         output_data.append(one_turn)
     dfs_reset_index = [df.reset_index(drop=True) for df in output_data]
@@ -37,8 +40,8 @@ df_new = transform_data(df)
 # print(df_new)
 
 
-
-fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
+fig, ax = plt.subplots(subplot_kw={"projection": "polar"})
 angles = np.linspace(0, 2 * np.pi, 61, endpoint=False)
 ax.plot(angles, df_new.iloc[:, 0])
 plt.show()
+
