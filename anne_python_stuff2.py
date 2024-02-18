@@ -40,7 +40,7 @@ def transform_data(df):
     df_transposed = df
     output_data = []
 
-    for i in range(244): # 244 because 305 - 61 (letzte Umdrehung wird rausgenommen, damit jeder neue teil eine komplette umdrehung hat)
+    for i in range(549): # 244 because 305 - 61 (letzte Umdrehung wird rausgenommen, damit jeder neue teil eine komplette umdrehung hat)
         one_turn = df_transposed.iloc[i:i+61, :]
         # print(one_turn)
         output_data.append(one_turn)
@@ -213,34 +213,34 @@ plt.show()
 
 
 
-# # Berechne die Trainingsgenauigkeit
-# # Definiere dein Modell mit StandardScaler
-# model = make_pipeline(StandardScaler(), SVC())
+# Berechne die Trainingsgenauigkeit
+# Definiere dein Modell mit StandardScaler
+model = make_pipeline(StandardScaler(), SVC())
 
-# # Trainiere das Modell auf den Trainingsdaten
-# model.fit(X_train, y_train)
+# Trainiere das Modell auf den Trainingsdaten
+model.fit(X_train, y_train)
 
-# # Mache Vorhersagen auf den Trainingsdaten
-# y_train_pred = model.predict(X_train)
+# Mache Vorhersagen auf den Trainingsdaten
+y_train_pred = model.predict(X_train)
 
-# # Berechne die Trainingsgenauigkeit
-# train_accuracy = accuracy_score(y_train, y_train_pred)
-# print("Trainingsgenauigkeit: ", train_accuracy)
+# Berechne die Trainingsgenauigkeit
+train_accuracy = accuracy_score(y_train, y_train_pred)
+print("Trainingsgenauigkeit: ", train_accuracy)
 
-# # Mache Vorhersagen auf den Testdaten
-# y_pred = model.predict(X_test)
+# Mache Vorhersagen auf den Testdaten
+y_pred = model.predict(X_test)
 
 
-# #MATRIX DAZU
-# conf_matrix = confusion_matrix(y_test, y_pred)
+#MATRIX DAZU
+conf_matrix = confusion_matrix(y_test, y_pred)
 
-# # Plotten der Konfusionsmatrix
-# plt.figure(figsize=(8, 6))
-# sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', cbar=False)
-# plt.title('Konfusionsmatrix')
-# plt.xlabel('Vorhergesagte Klasse')
-# plt.ylabel('Tatsächliche Klasse')
-# plt.show()
+# Plotten der Konfusionsmatrix
+plt.figure(figsize=(8, 6))
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', cbar=False)
+plt.title('Konfusionsmatrix')
+plt.xlabel('Vorhergesagte Klasse')
+plt.ylabel('Tatsächliche Klasse')
+plt.show()
 # # #Trainingsgenauigkeit:  0.8032786885245902"""
 
 # #TRAINING GRÖßER ALS TEST --> OVERFITTING
